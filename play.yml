@@ -1,37 +1,48 @@
 ---
 - hosts: devserver
   become: yes
-  ignore_errors: True
-  vars: 
-    username: Tee
+  ignore_errors: yes
+  vars:
+    username: serge
     pkg_name: httpd
   tasks:
     - name: Creating user
-      user: 
+      user:
         name: "{{ username }}"
-        comment: Tee Admin
+        comment: Serge Admin
         shell: /bin/bash
-        #when: ansible_os_family ==  "Debian"
-    - name: create file
+          #when: ansible_os_family == "Debian" 
+    - name: create file 
       file:
         path: /tmp/ansible.txt
-        state: touch     
+        state: touch
         mode: '0600'
+      register: output
+    - name: read the output
+      debug:
+       msg: "Hello from ansible this is running on {{ ansible_os_family }}"
     - name: Create directory
       file:
         path: /tmp/dir
         state: directory
         mode: '0777'
+      tags:
+        - app1
+        - c1
+    - name: create a file
+      shell: cat /etc/passwd | grep Tee
     - name: install apache
       yum:
         name: "{{ pkg_name }}"
-        state: present
-    - name: install finger
-      package:
-        name: "{{ item }}"
-        state: present
+        state: present 
+
+    - name: install finger 
+      package: 
+       name: "{{ item }}"
+       state: present 
       with_items:
         - wget
         - samba
-        - java-11*
-        - finger 
+        - java-8*
+        - finger
+            
